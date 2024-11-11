@@ -1,8 +1,11 @@
-function App() {
+import WebGl from './WebGL'
 
-  return <>
- 
-  </>
+function App() {
+    return (
+        <>
+            <WebGl />
+        </>
+    )
 }
 
 export default App
