@@ -1,3 +1,5 @@
+@use "variables";
+
 @font-face {
     font-family: 'Futura';
     src: url(/fonts/FuturaLT-Light.ttf);
@@ -36,11 +38,12 @@
 body {
     overflow-x: hidden;
     font-family: FuturaRg;
-    font-size: $font_medium;
+    font-size: variables.$font_medium;
     line-height: 1.5;
     letter-spacing: 1px;
-    color: $nav_links;
+    color: variables.$nav_links;
     text-align: center;
+    background-color: #241a1a;
 
     &.noscroll {
         overflow: hidden;
@@ -58,7 +61,7 @@ a:link,
 a:visited,
 a:hover {
     text-decoration: none;
-    color: $nav_links;
+    color: variables.$nav_links;
 }
 
 p {
@@ -73,4 +76,12 @@ canvas {
 #root {
     width: 100vw;
     height: 100vh;
+    
+}
+
+img {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

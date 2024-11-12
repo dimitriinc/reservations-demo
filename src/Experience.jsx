@@ -11,18 +11,29 @@ import { colors, glassTables } from './utils.js'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
 import { useFrame } from '@react-three/fiber'
 
+let leafIndex = 0
+
+function getLeafColor() {
+    const index = leafIndex
+    if (leafIndex === colors.length - 1) leafIndex = 0
+    else leafIndex++
+    return colors[index]
+}
+
 function getRandomLeafColor(colors) {
     const index = Math.floor(Math.random() * colors.length)
     return colors[index]
 }
 
-export default function Experience({ reservedTables }) {
+export default function Experience() {
+
+    leafIndex = 0
 
     const sceneRef = useRef()
     const reservadoRefs = useRef({})
 
     const [chosenTables, setChosenTables] = useState([])
-    const [unavailableTables, setUnavailableTables] = useState(reservedTables)
+    const [unavailableTables, setUnavailableTables] = useState(['05', '10', '08', '02'])
     const [selectedTable, setSelectedTable] = useState('')
 
     const baked = useGLTF('/models/baked.glb')
@@ -41,21 +52,17 @@ export default function Experience({ reservedTables }) {
 
     const tablesTexture = useTexture('./textures/tables.jpg')
     tablesTexture.flipY = false
-    const tablesEmissionTexture = useTexture('./textures/tablesEmission.jpg')
-    tablesEmissionTexture.flipY = false
     const reservadoTexture = useTexture('./textures/reservado.jpg')
     reservadoTexture.flipY = false
 
     const alphaMap = useTexture('./textures/alpha.png')
 
-    const leafTexture = useTexture('./textures/leafTest.png')
-    leafTexture.flipY = false
 
     useEffect(() => {
-        reservedTables.forEach((tableNumber) => {
+        unavailableTables.forEach((tableNumber) => {
             reservadoRefs.current[tableNumber] = React.createRef()
         })
-    }, [reservedTables.length])
+    }, [])
 
     useFrame((_, delta) => {
         Object.values(reservadoRefs.current).forEach((ref) => {
@@ -82,9 +89,6 @@ export default function Experience({ reservedTables }) {
 
     return (
         <>
-            {/* {dialogPosition && (
-                
-            )} */}
 
             <group
                 ref={sceneRef}
@@ -157,7 +161,7 @@ export default function Experience({ reservedTables }) {
                                         scale={child.scale}
                                         key={child.uuid}
                                     >
-                                        <meshStandardMaterial
+                                        <meshBasicMaterial
                                             map={reservadoTexture}
                                         />
                                     </mesh>
@@ -459,24 +463,10 @@ export default function Experience({ reservedTables }) {
                                 scale={node.scale}
                             >
                                 <meshStandardMaterial
-                                    color={getRandomLeafColor(colors)}
+                                    color={getLeafColor()}
                                     side={DoubleSide}
                                     roughness={1}
                                 />
-                            </mesh>
-                        )
-                    }
-
-                    if (node.name.startsWith('test')) {
-                        return (
-                            <mesh
-                                geometry={node.geometry}
-                                position={node.position}
-                                rotation={node.rotation}
-                                key={node.uuid}
-                                scale={node.scale}
-                            >
-                                <meshBasicMaterial map={leafTexture} />
                             </mesh>
                         )
                     }
