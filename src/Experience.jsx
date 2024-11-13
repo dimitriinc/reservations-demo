@@ -11,6 +11,9 @@ import { colors, glassTables } from './utils.js'
 import { Bloom, EffectComposer } from '@react-three/postprocessing'
 import { useFrame } from '@react-three/fiber'
 
+const smallPax = [1, 2, 3]
+const bigPax = [3, 4, 5, 6]
+
 let leafIndex = 0
 
 function getLeafColor() {
@@ -25,16 +28,22 @@ function getRandomLeafColor(colors) {
     return colors[index]
 }
 
-export default function Experience() {
-
+export default function Experience({ onControlsEnabled }) {
     leafIndex = 0
 
     const sceneRef = useRef()
     const reservadoRefs = useRef({})
 
-    const [chosenTables, setChosenTables] = useState([])
-    const [unavailableTables, setUnavailableTables] = useState(['05', '10', '08', '02'])
+    // const [chosenTables, setChosenTables] = useState([])
+    const [unavailableTables, setUnavailableTables] = useState([
+        '05',
+        '10',
+        '08',
+        '02',
+    ])
     const [selectedTable, setSelectedTable] = useState('')
+    const [selectedSmallPax, setSelectedSmallPax] = useState(2)
+    const [selectedBigPax, setSelectedBigPax] = useState(4)
 
     const baked = useGLTF('/models/baked.glb')
     const normal = useGLTF('/models/normal.glb')
@@ -57,7 +66,6 @@ export default function Experience() {
 
     const alphaMap = useTexture('./textures/alpha.png')
 
-
     useEffect(() => {
         unavailableTables.forEach((tableNumber) => {
             reservadoRefs.current[tableNumber] = React.createRef()
@@ -75,21 +83,29 @@ export default function Experience() {
             setSelectedTable('')
             return
         }
+        onControlsEnabled(false)
         setSelectedTable(tableObj.name)
+        setSelectedBigPax(4)
+        setSelectedSmallPax(2)
     }
 
     function handleConfirmar() {
-        setUnavailableTables(prev => [...prev, selectedTable])
+        setUnavailableTables((prev) => [...prev, selectedTable])
         setSelectedTable('')
+        setSelectedBigPax(4)
+        setSelectedSmallPax(2)
+        onControlsEnabled(true)
     }
 
     function handleDialogExit() {
-        if (selectedTable) setSelectedTable('')
+        if (selectedTable) {
+            setSelectedTable('')
+            onControlsEnabled(true)
+        }
     }
 
     return (
         <>
-
             <group
                 ref={sceneRef}
                 position={[0, 0, -8]}
@@ -142,7 +158,7 @@ export default function Experience() {
                                     >
                                         <meshPhysicalMaterial
                                             depthWrite={false}
-                                            color="#aaa"
+                                            color="#ddd"
                                             transmission={1}
                                             opacity={0.6}
                                             transparent={true}
@@ -191,7 +207,7 @@ export default function Experience() {
                                     >
                                         <meshPhysicalMaterial
                                             depthWrite={false}
-                                            color="#aaa"
+                                            color="#ddd"
                                             transmission={1}
                                             opacity={0.6}
                                             transparent={true}
@@ -201,16 +217,30 @@ export default function Experience() {
                                             clearcoat={1}
                                             clearcoatRoughness={0}
                                         />
-                                         {node.name === selectedTable ? (
-                                            <Html>
-                                                <div
-                                                    className="gl-dialog"
-                                                >
-                                                    <p>Mesa {selectedTable}</p>
-                                                    <p>To be continued.</p>
+                                        {node.name === selectedTable ? (
+                                            <Html position={[4, 4, 4]}>
+                                                <div className="gl-dialog">
+                                                    <p>Personas</p>
+                                                    <select
+                                                        value={selectedSmallPax}
+                                                        onChange={(event) =>
+                                                            setSelectedSmallPax(
+                                                                event.target
+                                                                    .value
+                                                            )
+                                                        }
+                                                    >
+                                                        {smallPax.map((v) => (
+                                                            <option value={v}>
+                                                                {v}
+                                                            </option>
+                                                        ))}
+                                                    </select>
                                                     <div
                                                         className="gl-dialog-btn"
-                                                        onClick={handleConfirmar}
+                                                        onClick={
+                                                            handleConfirmar
+                                                        }
                                                     >
                                                         Confirmar
                                                     </div>
@@ -220,17 +250,21 @@ export default function Experience() {
                                     </mesh>
                                     <mesh
                                         geometry={cta.geometry}
-                                        position={cta.position}
+                                        position={
+                                            selectedTable === node.name
+                                                ? cta.position
+                                                : cta.position
+                                        }
                                         rotation={cta.rotation}
-                                        scale={cta.scale}
+                                        scale={
+                                            selectedTable === node.name
+                                                ? cta.scale
+                                                : cta.scale
+                                        }
                                         key={cta.uuid}
                                     >
                                         <meshStandardMaterial
-                                            emissive={
-                                                chosenTables.includes(node.name)
-                                                    ? new Color('#dcabff')
-                                                    : new Color('#09ff9c')
-                                            }
+                                            emissive={ selectedTable === node.name ? new Color('red') : new Color('#09ff9c')}
                                             emissiveIntensity={3}
                                         />
                                     </mesh>
@@ -314,15 +348,61 @@ export default function Experience() {
                                             map={tablesTexture}
                                         />
                                         {node.name === selectedTable ? (
-                                            <Html>
-                                                <div
-                                                    className="gl-dialog"
-                                                >
-                                                    <p>Mesa {selectedTable}</p>
-                                                    <p>To be continued.</p>
+                                            <Html position={[4, 4, 4]}>
+                                                <div className="gl-dialog">
+                                                    <p>Personas</p>
+                                                    {node.name === '05' ||
+                                                    node.name === '11' ? (
+                                                        <select
+                                                            value={
+                                                                selectedBigPax
+                                                            }
+                                                            onChange={(event) =>
+                                                                setSelectedBigPax(
+                                                                    event.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        >
+                                                            {bigPax.map((v) => (
+                                                                <option
+                                                                    value={v}
+                                                                >
+                                                                    {v}
+                                                                </option>
+                                                            ))}
+                                                        </select>
+                                                    ) : (
+                                                        <select
+                                                            value={
+                                                                selectedSmallPax
+                                                            }
+                                                            onChange={(event) =>
+                                                                setSelectedSmallPax(
+                                                                    event.target
+                                                                        .value
+                                                                )
+                                                            }
+                                                        >
+                                                            {smallPax.map(
+                                                                (v) => (
+                                                                    <option
+                                                                        value={
+                                                                            v
+                                                                        }
+                                                                    >
+                                                                        {v}
+                                                                    </option>
+                                                                )
+                                                            )}
+                                                        </select>
+                                                    )}
+
                                                     <div
                                                         className="gl-dialog-btn"
-                                                        onClick={handleConfirmar}
+                                                        onClick={
+                                                            handleConfirmar
+                                                        }
                                                     >
                                                         Confirmar
                                                     </div>
@@ -338,11 +418,7 @@ export default function Experience() {
                                         key={cta.uuid}
                                     >
                                         <meshStandardMaterial
-                                            emissive={
-                                                chosenTables.includes(node.name)
-                                                    ? new Color('#dcabff')
-                                                    : new Color('#09ff9c')
-                                            }
+                                            emissive={ selectedTable === node.name ? new Color('red') : new Color('#09ff9c')}
                                             emissiveIntensity={3}
                                         />
                                     </mesh>
