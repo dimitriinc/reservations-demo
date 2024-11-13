@@ -83,8 +83,8 @@ export default function Experience({ onControlsEnabled }) {
             setSelectedTable('')
             return
         }
-        onControlsEnabled(false)
         setSelectedTable(tableObj.name)
+        onControlsEnabled(false)
         setSelectedBigPax(4)
         setSelectedSmallPax(2)
     }

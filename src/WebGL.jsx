@@ -56,10 +56,6 @@ function WebGL() {
                 setIsLoading(false)
             }}
         >
-            {/* <Environment
-                background={false}
-                preset="sunset"
-            /> */}
 
             <Sky
                 position={[0, 0, 0]}
