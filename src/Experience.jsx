@@ -479,10 +479,10 @@ export default function Experience({ onControlsEnabled }) {
                             >
                                 <meshPhysicalMaterial
                                     // depthWrite={false}
-                                    color="#fff"
-                                    transmission={1} // For glass transparency
-                                    opacity={0.9} // Adjust transparency level
-                                    transparent={true} // Allow transparency
+                                    color="#ddd"
+                                    // transmission={1} // For glass transparency
+                                    // opacity={0.9} // Adjust transparency level
+                                    // transparent={true} // Allow transparency
                                     roughness={0.9} // Smooth surface
                                     metalness={0.1} // Slight metallic sheen
                                     reflectivity={1} // Reflectivity for glass-like effect

@@ -1,6 +1,8 @@
 import WebGl from './WebGL'
+import { useState } from 'react'
 
 function App() {
+    const [glReady, setGlReady] = useState(false)
     return (
         <>
             <img
@@ -14,10 +16,10 @@ function App() {
                     src="logo.svg"
                     width={56}
                     height={56}
-                    className="logo"
+                    className={`logo ${glReady && 'logo-visible'}`}
                 />
             </a>
-            <WebGl />
+            <WebGl onGlReady={setGlReady} />
         </>
     )
 }

@@ -26,7 +26,7 @@ function DirectionalLightWithHelper() {
     )
 }
 
-function WebGL() {
+function WebGL({onGlReady}) {
     const [isLoading, setIsLoading] = useState(true)
     const [controlsEnabled, setControlsEnabled] = useState(true)
 
@@ -54,6 +54,7 @@ function WebGL() {
             }
             onCreated={() => {
                 setIsLoading(false)
+                onGlReady(true)
             }}
         >
 
